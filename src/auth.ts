@@ -15,7 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
    * providers: 認証プロバイダの設定
    *
    * ここで設定したプロバイダでログインできるようになる。
-   * 今回は Google のみだが、GitHub, Twitter など複数追加可能。
+   * 今回は Google のみだが、GitHub, Twitter なども追加可能。
    */
   providers: [
     Google({

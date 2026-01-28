@@ -12,25 +12,18 @@ import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   /**
-   * Google ログインボタンのクリックハンドラ
-   *
    * signIn() の引数:
    * - 第1引数 "google": 使用するプロバイダ名 (auth.ts の providers で設定したもの)
    * - 第2引数 { callbackUrl }: ログイン成功後のリダイレクト先
    *
-   * 実行されると:
-   * 1. Google の認証ページにリダイレクト
-   * 2. ユーザーが Google でログイン
-   * 3. /api/auth/callback/google に戻ってくる
-   * 4. NextAuth.js がセッション (JWT Cookie) を作成
-   * 5. callbackUrl (/dashboard) にリダイレクト
-   *
-   * void を付けている理由:
-   * signIn() は Promise を返すが、このコンポーネントでは await しない。
-   * ESLint の no-floating-promises ルールを満たすため void で明示的に無視。
+   * signIn() が実行されると Google の認証ページにリダイレクトする。
+   * ユーザーが Google でログインすると、/api/auth/callback/google にリダイレクト。
+   * /api/auth/callback/google にて NextAuth.js がセッション (JWT Cookie) を作成。
+   * callbackUrl (/dashboard) にリダイレクト。
    */
   const handleGoogleLogin = () => {
-    void signIn("google", { callbackUrl: "/dashboard" });
+    const options = { callbackUrl: "/dashboard" };
+    void signIn("google", options);
   };
 
   return (

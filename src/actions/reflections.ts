@@ -43,7 +43,7 @@ export async function createReflection(formData: FormData) {
   }
 
   const goalId = formData.get("goalId") as string;
-  const good = (formData.get("good") as string) || null;
+  const good = (formData.get("good") as string)?.trim() || "";
   const bad = (formData.get("bad") as string) || null;
   const analysis = (formData.get("analysis") as string) || null;
   const nextAction = (formData.get("nextAction") as string) || null;
@@ -51,6 +51,10 @@ export async function createReflection(formData: FormData) {
 
   if (!goalId) {
     throw new Error("Goal ID is required");
+  }
+
+  if (!good) {
+    throw new Error("Good is required");
   }
 
   // 自分の目標か確認
@@ -114,13 +118,17 @@ export async function updateReflection(formData: FormData) {
   }
 
   const id = formData.get("id") as string;
-  const good = (formData.get("good") as string) || null;
+  const good = (formData.get("good") as string)?.trim() || "";
   const bad = (formData.get("bad") as string) || null;
   const analysis = (formData.get("analysis") as string) || null;
   const nextAction = (formData.get("nextAction") as string) || null;
 
   if (!id) {
     throw new Error("ID is required");
+  }
+
+  if (!good) {
+    throw new Error("Good is required");
   }
 
   // 振り返りを取得して、自分の目標のものか確認

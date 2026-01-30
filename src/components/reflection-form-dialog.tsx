@@ -19,7 +19,7 @@ type ReflectionFormDialogProps = {
   goalTitle: string;
   existingReflection?: {
     id: string;
-    good: string | null;
+    good: string;
     bad: string | null;
     analysis: string | null;
     next_action: string | null;
@@ -36,9 +36,13 @@ export function ReflectionFormDialog({
 }: ReflectionFormDialogProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [good, setGood] = useState(existingReflection?.good || "");
 
   // 今日の日付 (YYYY-MM-DD 形式)
   const today = new Date().toISOString().split("T")[0];
+
+  // Good が空なら保存ボタンを非活性
+  const canSubmit = good.trim().length > 0;
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -81,13 +85,20 @@ export function ReflectionFormDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="good">Good (うまくいったこと)</Label>
+            <Label htmlFor="good" className="flex items-center gap-2">
+              Good (やったこと・うまくいったこと)
+              <span className="rounded bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-600">
+                必須
+              </span>
+            </Label>
             <Textarea
               id="good"
               name="good"
-              placeholder="今日うまくいったことは?"
-              defaultValue={existingReflection?.good || ""}
+              placeholder="今日やったこと、うまくいったことは?"
+              value={good}
+              onChange={(e) => setGood(e.target.value)}
               rows={2}
+              required
             />
           </div>
 
@@ -128,7 +139,7 @@ export function ReflectionFormDialog({
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               キャンセル
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting || !canSubmit}>
               {isSubmitting ? "保存中..." : "保存"}
             </Button>
           </div>

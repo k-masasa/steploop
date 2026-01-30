@@ -14,7 +14,7 @@ type GoalCardProps = {
     reflections: {
       id: string;
       date: Date;
-      good: string | null;
+      good: string;
       bad: string | null;
       analysis: string | null;
       next_action: string | null;

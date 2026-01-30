@@ -55,7 +55,7 @@ model Goal {
 model Reflection {
   id          String    @id @default(uuid())
   goal_id     String
-  good        String?
+  good        String    // 必須: やったこと・うまくいったこと
   bad         String?
   analysis    String?
   next_action String?

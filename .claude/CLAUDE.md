@@ -18,16 +18,18 @@
 
 実装やコード変更を完了したら、**必ず**以下のコマンドを実行して問題がないことを確認すること：
 
-### 1. TypeScript タイプチェック
+### 1. コードフォーマット (最重要)
+
+**実装が終わったら真っ先に実行すること。これを忘れるとコミット時にエラーになる。**
+
+```bash
+npm run format
+```
+
+### 2. TypeScript タイプチェック
 
 ```bash
 npm run type-check
-```
-
-### 2. ビルドチェック
-
-```bash
-npm run build
 ```
 
 ### 3. Lint チェック
@@ -36,9 +38,24 @@ npm run build
 npm run lint
 ```
 
+### 4. ビルドチェック (大きな変更時のみ)
+
+```bash
+npm run build
+```
+
+### ワンライナー (推奨)
+
+以下を実行すれば全部チェックできる：
+
+```bash
+npm run format && npm run type-check && npm run lint
+```
+
 ### 注意事項
 
 - **npm 系のコマンド実行時は確認不要**: `npm run *` コマンドを実行する際、ユーザーへの確認は不要。自動的に実行して問題ない。
+- **format は必ず最初に実行**: `npm run format` を忘れると pre-commit hook でコミットが弾かれる。実装後は条件反射で `npm run format` を叩くこと。
 
 ## チェックが失敗した場合
 

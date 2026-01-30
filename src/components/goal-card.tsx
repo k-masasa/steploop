@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { GoalFormDialog } from "@/components/goal-form-dialog";
 import { ReflectionFormDialog } from "@/components/reflection-form-dialog";
+import { ReflectionHistoryDialog } from "@/components/reflection-history-dialog";
 
 type GoalCardProps = {
   goal: {
@@ -86,9 +87,7 @@ export function GoalCard({ goal }: GoalCardProps) {
         <div className="mt-4 flex gap-2">
           <ReflectionFormDialog goalId={goal.id} goalTitle={goal.title} />
           {goal.reflections.length > 3 && (
-            <Button variant="outline" size="sm">
-              履歴を見る
-            </Button>
+            <ReflectionHistoryDialog goalTitle={goal.title} reflections={goal.reflections} />
           )}
         </div>
       </CardContent>

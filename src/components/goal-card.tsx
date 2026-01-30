@@ -66,6 +66,17 @@ export function GoalCard({ goal }: GoalCardProps) {
                     <span className="text-red-600">Bad:</span> {reflection.bad}
                   </p>
                 )}
+                {reflection.analysis && (
+                  <p className="mt-1">
+                    <span className="text-blue-600">要因分析:</span> {reflection.analysis}
+                  </p>
+                )}
+                {reflection.next_action && (
+                  <p className="mt-1">
+                    <span className="text-purple-600">次のアクション:</span>{" "}
+                    {reflection.next_action}
+                  </p>
+                )}
               </li>
             ))}
           </ul>
@@ -74,7 +85,7 @@ export function GoalCard({ goal }: GoalCardProps) {
         {/* アクションボタン */}
         <div className="mt-4 flex gap-2">
           <ReflectionFormDialog goalId={goal.id} goalTitle={goal.title} />
-          {goal.reflections.length > 0 && (
+          {goal.reflections.length > 3 && (
             <Button variant="outline" size="sm">
               履歴を見る
             </Button>

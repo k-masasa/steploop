@@ -23,7 +23,6 @@ type GoalCardProps = {
 };
 
 export function GoalCard({ goal }: GoalCardProps) {
-  // 日付をフォーマット
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("ja-JP", {
       month: "numeric",
@@ -33,50 +32,57 @@ export function GoalCard({ goal }: GoalCardProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">{goal.title}</CardTitle>
           <GoalFormDialog
             mode="edit"
             goal={goal}
             trigger={
-              <Button variant="outline" size="sm">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="opacity-60 hover:opacity-100 transition-opacity"
+              >
                 編集
               </Button>
             }
           />
         </div>
-        {goal.description && <p className="text-sm text-gray-500">{goal.description}</p>}
+        {goal.description && (
+          <p className="text-sm text-muted-foreground mt-1">{goal.description}</p>
+        )}
       </CardHeader>
       <CardContent>
         {/* 直近の振り返り */}
         {goal.reflections.length === 0 ? (
-          <p className="text-sm text-gray-500">まだ振り返りがありません</p>
+          <div className="text-center py-4">
+            <p className="text-muted-foreground text-sm">まだ振り返りがありません</p>
+            <p className="text-muted-foreground/70 text-xs mt-1">
+              下のボタンから最初の振り返りを記録しよう
+            </p>
+          </div>
         ) : (
           <ul className="space-y-2">
-            {goal.reflections.slice(0, 3).map((reflection) => (
-              <li key={reflection.id} className="rounded-md bg-gray-50 p-2 text-sm">
-                <span className="font-medium text-gray-600">{formatDate(reflection.date)}:</span>
-                {reflection.good && (
-                  <p className="mt-1">
-                    <span className="text-green-600">Good:</span> {reflection.good}
-                  </p>
-                )}
+            {goal.reflections.slice(0, 3).map((reflection, index) => (
+              <li
+                key={reflection.id}
+                className="border-b border-border pb-2 last:border-b-0 text-sm"
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs text-muted-foreground">
+                    {formatDate(reflection.date)}
+                  </span>
+                  {index === 0 && (
+                    <span className="text-xs bg-muted px-1.5 py-0.5 rounded">最新</span>
+                  )}
+                </div>
+                <p>{reflection.good}</p>
                 {reflection.bad && (
-                  <p className="mt-1">
-                    <span className="text-red-600">Bad:</span> {reflection.bad}
-                  </p>
-                )}
-                {reflection.analysis && (
-                  <p className="mt-1">
-                    <span className="text-blue-600">要因分析:</span> {reflection.analysis}
-                  </p>
+                  <p className="mt-1 text-muted-foreground text-xs">課題: {reflection.bad}</p>
                 )}
                 {reflection.next_action && (
-                  <p className="mt-1">
-                    <span className="text-purple-600">次のアクション:</span>{" "}
-                    {reflection.next_action}
-                  </p>
+                  <p className="mt-1 text-muted-foreground text-xs">次: {reflection.next_action}</p>
                 )}
               </li>
             ))}

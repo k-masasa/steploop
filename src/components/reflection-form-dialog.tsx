@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { createReflection } from "@/actions/reflections";
+import { toast } from "sonner";
 
 type ReflectionFormDialogProps = {
   goalId: string;
@@ -49,9 +50,15 @@ export function ReflectionFormDialog({
     try {
       await createReflection(formData);
       setOpen(false);
+      setGood(""); // フォームリセット
+      toast.success("振り返りを保存しました", {
+        description: "明日も頑張ろう！",
+      });
     } catch (error) {
       console.error("Failed to save reflection:", error);
-      alert("保存に失敗しました");
+      toast.error("保存に失敗しました", {
+        description: "もう一度お試しください",
+      });
     } finally {
       setIsSubmitting(false);
     }

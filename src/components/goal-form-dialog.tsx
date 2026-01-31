@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createGoal, updateGoal } from "@/actions/goals";
+import { toast } from "sonner";
 
 type GoalFormDialogProps = {
   mode: "create" | "edit";
@@ -33,13 +34,19 @@ export function GoalFormDialog({ mode, goal, trigger }: GoalFormDialogProps) {
     try {
       if (mode === "create") {
         await createGoal(formData);
+        toast.success("目標を追加しました", {
+          description: "一緒に頑張ろう！",
+        });
       } else {
         await updateGoal(formData);
+        toast.success("目標を更新しました");
       }
       setOpen(false);
     } catch (error) {
       console.error("Failed to save goal:", error);
-      alert("保存に失敗しました");
+      toast.error("保存に失敗しました", {
+        description: "もう一度お試しください",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -56,6 +63,7 @@ export function GoalFormDialog({ mode, goal, trigger }: GoalFormDialogProps) {
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
           {mode === "edit" && goal && <input type="hidden" name="id" value={goal.id} />}
+
           <div className="space-y-2">
             <Label htmlFor="title">目標タイトル</Label>
             <Input
@@ -66,6 +74,7 @@ export function GoalFormDialog({ mode, goal, trigger }: GoalFormDialogProps) {
               required
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="description">詳細 (任意)</Label>
             <Textarea
@@ -76,7 +85,8 @@ export function GoalFormDialog({ mode, goal, trigger }: GoalFormDialogProps) {
               rows={3}
             />
           </div>
-          <div className="flex justify-end gap-2">
+
+          <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               キャンセル
             </Button>

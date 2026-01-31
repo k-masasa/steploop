@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  Textarea,
+  useDisclosure,
+} from "@nextui-org/react";
 import { createGoal, updateGoal } from "@/actions/goals";
 import { toast } from "sonner";
 
@@ -22,11 +22,19 @@ type GoalFormDialogProps = {
     title: string;
     description: string | null;
   };
-  trigger?: React.ReactNode;
+  triggerVariant?: "light" | "bordered" | "solid" | "flat" | "ghost";
+  triggerSize?: "sm" | "md" | "lg";
+  triggerLabel?: string;
 };
 
-export function GoalFormDialog({ mode, goal, trigger }: GoalFormDialogProps) {
-  const [open, setOpen] = useState(false);
+export function GoalFormDialog({
+  mode,
+  goal,
+  triggerVariant = mode === "create" ? "solid" : "light",
+  triggerSize = mode === "create" ? "md" : "sm",
+  triggerLabel,
+}: GoalFormDialogProps) {
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (formData: FormData) => {
@@ -41,7 +49,7 @@ export function GoalFormDialog({ mode, goal, trigger }: GoalFormDialogProps) {
         await updateGoal(formData);
         toast.success("目標を更新しました");
       }
-      setOpen(false);
+      onClose();
     } catch (error) {
       console.error("Failed to save goal:", error);
       toast.error("保存に失敗しました", {
@@ -52,50 +60,54 @@ export function GoalFormDialog({ mode, goal, trigger }: GoalFormDialogProps) {
     }
   };
 
+  const defaultLabel = mode === "create" ? "+ 目標を追加" : "編集";
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || <Button>{mode === "create" ? "+ 目標を追加" : "編集"}</Button>}
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{mode === "create" ? "新しい目標を追加" : "目標を編集"}</DialogTitle>
-        </DialogHeader>
-        <form action={handleSubmit} className="space-y-4">
-          {mode === "edit" && goal && <input type="hidden" name="id" value={goal.id} />}
-
-          <div className="space-y-2">
-            <Label htmlFor="title">目標タイトル</Label>
-            <Input
-              id="title"
-              name="title"
-              placeholder="例: 毎日運動する"
-              defaultValue={goal?.title || ""}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">詳細 (任意)</Label>
-            <Textarea
-              id="description"
-              name="description"
-              placeholder="目標の詳細や背景を書いてください"
-              defaultValue={goal?.description || ""}
-              rows={3}
-            />
-          </div>
-
-          <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              キャンセル
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "保存中..." : "保存"}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Button
+        color={mode === "create" ? "primary" : "default"}
+        variant={triggerVariant}
+        size={triggerSize}
+        onPress={onOpen}
+      >
+        {triggerLabel || defaultLabel}
+      </Button>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {() => (
+            <form action={handleSubmit}>
+              <ModalHeader>{mode === "create" ? "新しい目標を追加" : "目標を編集"}</ModalHeader>
+              <ModalBody>
+                {mode === "edit" && goal && <input type="hidden" name="id" value={goal.id} />}
+                <Input
+                  label="目標タイトル"
+                  name="title"
+                  placeholder="例: 毎日運動する"
+                  defaultValue={goal?.title || ""}
+                  isRequired
+                  variant="bordered"
+                />
+                <Textarea
+                  label="詳細 (任意)"
+                  name="description"
+                  placeholder="目標の詳細や背景を書いてください"
+                  defaultValue={goal?.description || ""}
+                  variant="bordered"
+                  minRows={3}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  キャンセル
+                </Button>
+                <Button color="primary" type="submit" isLoading={isSubmitting}>
+                  保存
+                </Button>
+              </ModalFooter>
+            </form>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

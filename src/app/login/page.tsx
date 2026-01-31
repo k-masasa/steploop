@@ -1,61 +1,46 @@
 "use client";
 
-/**
- * next-auth/react からインポートする signIn は「クライアント側」で使う関数。
- * ボタンクリックなどのイベントから呼び出す。
- *
- * ※ src/auth.ts からエクスポートされる signIn は「サーバー側」で使う関数。
- *   Server Actions や Server Component から呼び出す用途。
- */
 import { signIn } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { Button, Card, CardBody, Link } from "@nextui-org/react";
 
 export default function LoginPage() {
-  /**
-   * signIn() の引数:
-   * - 第1引数 "google": 使用するプロバイダ名 (auth.ts の providers で設定したもの)
-   * - 第2引数 { callbackUrl }: ログイン成功後のリダイレクト先
-   *
-   * signIn() が実行されると Google の認証ページにリダイレクトする。
-   * ユーザーが Google でログインすると、/api/auth/callback/google にリダイレクト。
-   * /api/auth/callback/google にて NextAuth.js がセッション (JWT Cookie) を作成。
-   * callbackUrl (/dashboard) にリダイレクト。
-   */
   const handleGoogleLogin = () => {
     const options = { callbackUrl: "/dashboard" };
     void signIn("google", options);
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg">
-        {/* ロゴ・タイトル */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">StepLoop</h1>
-          <p className="mt-2 text-gray-600">目標達成のための振り返りサイクル</p>
-        </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-default-50">
+      <Card className="w-full max-w-md">
+        <CardBody className="p-8 space-y-8">
+          {/* ロゴ・タイトル */}
+          <div className="text-center">
+            <h1 className="text-3xl font-bold">StepLoop</h1>
+            <p className="mt-2 text-default-500">目標達成のための振り返りサイクル</p>
+          </div>
 
-        {/* ログインボタン */}
-        <div className="mt-8">
-          <Button
-            onClick={handleGoogleLogin}
-            variant="outline"
-            className="flex w-full items-center justify-center gap-3 py-6"
-          >
-            <GoogleIcon />
-            <span>Google でログイン</span>
-          </Button>
-        </div>
+          {/* ログインボタン */}
+          <div className="mt-8">
+            <Button
+              onPress={handleGoogleLogin}
+              variant="bordered"
+              className="w-full py-6"
+              startContent={<GoogleIcon />}
+            >
+              Google でログイン
+            </Button>
+          </div>
 
-        {/* フッター */}
-        <p className="mt-8 text-center text-sm text-gray-500">
-          ログインすることで、
-          <a href="/privacy" className="text-blue-600 hover:underline">
-            プライバシーポリシー
-          </a>
-          に同意したものとみなされます。
-        </p>
-      </div>
+          {/* フッター */}
+          <p className="text-center text-sm text-default-500">
+            ログインすることで、
+            <Link href="/privacy" size="sm">
+              プライバシーポリシー
+            </Link>
+            に同意したものとみなされます。
+          </p>
+        </CardBody>
+      </Card>
     </div>
   );
 }
